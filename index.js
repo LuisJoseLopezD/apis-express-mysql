@@ -1,22 +1,24 @@
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = 8080;
+const cors = require('cors');
 
-const prlangsRouter = require('./routes/prlangs');
+const login = require('./routes/login');
+const list = require('./routes/list');
 
 app.use(express.json());
-app.use(
-    express.urlencoded({
-        extended: true,
-    })
-);
+app.use(express.urlencoded({extended: true}));
+app.use(cors());
 
+// routes
 app.get("/", (req, res) => {
     res.json({ message: "ok" });
 });
 
-app.use("/list", (prlangsRouter));
+app.use("/api", login);
+app.use("/list", list);
 
+// handle errors
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;
     console.error(err.message, err.stack);
@@ -24,6 +26,4 @@ app.use((err, req, res, next) => {
     return;
 });
 
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
-});
+app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));

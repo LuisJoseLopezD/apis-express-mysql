@@ -1,12 +1,17 @@
-const mysql = require('mysql2/promise');
-const config = require('../config');
+// get the client
+const mysql = require('mysql2');
+const config = require("../config");
 
-async function query (sql, params){
+// create the connection to database
+const connection = mysql.createConnection(config.db);
 
-    const connection = await mysql.createConnection(config.db);
-    const [results,] = await connection.execute(sql,params);
+connection.connect(function(err) {
+    if (err) {
+      console.error('error connecting: ' + err.stack);
+      return;
+    }
+   
+    console.log('\x1b[36m%s\x1b[0m','connection sucessfull as id ' + connection.threadId);
+  });
 
-    return results;
-}
-
-module.exports = { query }
+module.exports = connection;
