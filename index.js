@@ -1,10 +1,13 @@
 const express = require("express");
 const app = express();
 const port = 8080;
+require("dotenv").config();
 const cors = require('cors');
-
 const login = require('./routes/login');
 const list = require('./routes/list');
+
+//middlewares
+const { verifyJwt } = require("./middlewares/verifyJwt");
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -16,7 +19,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api", login);
-app.use("/list", list);
+app.use("/list", verifyJwt, list);
 
 // handle errors
 app.use((err, req, res, next) => {
